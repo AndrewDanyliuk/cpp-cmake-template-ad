@@ -11,5 +11,6 @@ target_link_libraries(${PROJECT_NAME}_tests
 )
 
 # Discover and register tests with CTest
+list(APPEND CMAKE_MODULE_PATH ${Catch2_SOURCE_DIR}/extras)
 include(Catch)
 catch_discover_tests(${PROJECT_NAME}_tests)
