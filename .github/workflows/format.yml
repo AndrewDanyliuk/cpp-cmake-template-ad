@@ -1,0 +1,24 @@
+name: Format
+
+on: [push]
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Run clang-format
+        uses: DoozyX/clang-format-lint-action@v0.17
+        with:
+          source: './src ./include'
+          extensions: 'h,hpp,cpp'
+          clangFormatVersion: 17
+          inplace: True
+      
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Auto-format code"
