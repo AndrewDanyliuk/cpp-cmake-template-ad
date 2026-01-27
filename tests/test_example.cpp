@@ -1,5 +1,13 @@
-#include <catch2/catch_test_macros.hpp>
-#include <catch2/matchers/catch_matchers_floating_point.hpp>
+// Catch2 version-specific includes
+#if CATCH2_VERSION >= 3
+    #include <catch2/catch_test_macros.hpp>
+    #include <catch2/matchers/catch_matchers_floating_point.hpp>
+#else
+    // Catch2 v2: header-only, needs CATCH_CONFIG_MAIN in one file for main()
+    #define CATCH_CONFIG_MAIN
+    #include <catch2/catch.hpp>
+#endif
+
 #include <gmock/gmock.h>
 
 #include "PROJECT_NAME_LOWER/example.h"
@@ -184,7 +192,11 @@ TEST_CASE("Mock calculator with actions", "[mock]")
         }));
 
     double result = mock.divide(10.0, 2.0);
+#if CATCH2_VERSION >= 3
     REQUIRE_THAT(result, Catch::Matchers::WithinAbs(5.0, 0.001));
+#else
+    REQUIRE_THAT(result, Catch::WithinAbs(5.0, 0.001));
+#endif
 }
 
 // =============================================================================
@@ -243,7 +255,7 @@ protected:
 
     void SetUp()
     {
-        engine = std::make_unique<ComputationEngine>(mock_calc);
+        engine.reset(new ComputationEngine(mock_calc));
     }
 };
 
