@@ -1,0 +1,13 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+  "$comment": "Note: vcpkg requires lowercase names with hyphens (not underscores). The rename script handles this automatically.",
+  "name": "project-name",
+  "version": "1.0.0",
+  "description": "PROJECT_NAME_CAMEL C++ Project",
+  "homepage": "https://github.com/YOUR_USERNAME/PROJECT_NAME",
+  "dependencies": [
+    "catch2",
+    "gtest"
+  ],
+  "builtin-baseline": "7e7c62d863b1bf599c1d104b76cd8b74475844d4"
+}

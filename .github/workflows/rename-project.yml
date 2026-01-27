@@ -1,0 +1,59 @@
+name: Rename Project from Template
+on:
+  push:
+    branches:
+      - main
+      - master
+
+permissions:
+  contents: write
+
+jobs:
+  rename-project:
+    # Only run if this is not the template repo itself
+    if: github.repository != 'YOUR_USERNAME/cpp-template' && !contains(github.event.head_commit.message, '[skip-rename]')
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Check if already renamed
+        id: check
+        run: |
+          if [ ! -f "scripts/rename_project.sh" ]; then
+            echo "already_renamed=true" >> $GITHUB_OUTPUT
+            echo "Project already renamed, skipping..."
+          else
+            echo "already_renamed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Extract repository name
+        if: steps.check.outputs.already_renamed == 'false'
+        id: repo
+        run: |
+          REPO_NAME="${GITHUB_REPOSITORY##*/}"
+          echo "name=$REPO_NAME" >> $GITHUB_OUTPUT
+          echo "Renaming project to: $REPO_NAME"
+
+      - name: Run rename script
+        if: steps.check.outputs.already_renamed == 'false'
+        run: |
+          chmod +x scripts/rename_project.sh
+          ./scripts/rename_project.sh "${{ steps.repo.outputs.name }}"
+
+      - name: Commit changes
+        if: steps.check.outputs.already_renamed == 'false'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add -A
+          
+          if ! git diff-index --quiet HEAD; then
+            git commit -m "chore: rename project from template [skip-rename]"
+            git push
+          else
+            echo "No changes to commit"
+          fi

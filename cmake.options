@@ -1,0 +1,58 @@
+################################################################################
+# CMake Quick Configuration File
+################################################################################
+# 
+# IMPORTANT: These are DEFAULT values only!
+# 
+# ⚠️  CMakePresets.json takes precedence over this file
+# ⚠️  Command-line arguments (-DENABLE_TESTING=ON) override everything
+# 
+# This file is for quick experimentation. For reproducible builds and CI/CD,
+# use CMakePresets.json instead.
+#
+# Precedence order (highest to lowest):
+#   1. Command line: cmake -B build -DENABLE_TESTING=ON
+#   2. CMakePresets.json: cacheVariables
+#   3. This file (cmake.options)
+#   4. CMakeLists.txt defaults
+#
+################################################################################
+
+# C++ Standard (11, 14, 17, 20, 23)
+# Note: Ignored if CMAKE_CXX_STANDARD is set by preset or command line
+CXX_STANDARD=17
+
+# Build Type (Debug, Release, RelWithDebInfo, MinSizeRel)
+# Note: Ignored if CMAKE_BUILD_TYPE is set by preset or command line
+BUILD_TYPE=Debug
+
+# Package Manager (CPM, VCPKG, or NONE)
+# CPM  = CMake Package Manager (downloads dependencies automatically)
+# VCPKG = Microsoft's C++ package manager (requires VCPKG_ROOT environment variable)
+# NONE = Manual dependency management
+PACKAGE_MANAGER=CPM
+
+# Feature Toggles
+# Note: These can be overridden by presets or command line
+# Supported values: ON, OFF
+
+ENABLE_TESTING=ON
+ENABLE_COVERAGE=OFF
+ENABLE_CPPCHECK=OFF
+ENABLE_CLANG_TIDY=OFF
+ENABLE_CLANG_FORMAT=ON
+ENABLE_DOXYGEN=OFF
+ENABLE_CCACHE=ON
+
+# Coverage Tool (llvm-cov or gcov)
+# llvm-cov: Use with Clang compiler (recommended)
+# gcov: Use with GCC compiler or as fallback
+COVERAGE_TOOL=llvm-cov
+
+# Sanitizers (address, thread, undefined, memory, leak)
+# Note: Some sanitizers conflict (e.g., address + thread)
+ENABLE_SANITIZER_ADDRESS=OFF
+ENABLE_SANITIZER_THREAD=OFF
+ENABLE_SANITIZER_UNDEFINED=OFF
+ENABLE_SANITIZER_MEMORY=OFF
+ENABLE_SANITIZER_LEAK=OFF
