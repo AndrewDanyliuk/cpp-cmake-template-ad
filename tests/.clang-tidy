@@ -1,0 +1,60 @@
+---
+# Inherits from parent .clang-tidy but relaxes rules for test code
+Checks: >
+  -*,
+  altera-struct-pack-align,
+  bugprone-*,
+  clang-analyzer-*,
+  cppcoreguidelines-*,
+  modernize-*,
+  performance-*,
+  portability-*,
+  readability-*,
+  -modernize-use-trailing-return-type,
+  -readability-identifier-length,
+  -cppcoreguidelines-pro-bounds-pointer-arithmetic,
+  -cppcoreguidelines-pro-bounds-constant-array-index,
+  -readability-magic-numbers,
+  -cppcoreguidelines-avoid-magic-numbers,
+  -bugprone-chained-comparison,
+  -cppcoreguidelines-owning-memory,
+  -cppcoreguidelines-special-member-functions,
+  -cppcoreguidelines-avoid-non-const-global-variables
+
+# Fewer warnings treated as errors in test code
+WarningsAsErrors: 'modernize-use-nullptr,bugprone-assignment-in-if-condition,bugprone-empty-catch,bugprone-narrowing-conversions,bugprone-too-small-loop-variable,portability-avoid-pragma-once'
+HeaderFilterRegex: '.*(src|include|tests)/.*'
+FormatStyle: file
+
+CheckOptions:
+  - key: bugprone-argument-comment.CommentBoolLiterals
+    value: true
+  - key: bugprone-argument-comment.CommentIntegerLiterals
+    value: true
+  - key: bugprone-argument-comment.CommentFloatLiterals
+    value: true
+  - key: readability-identifier-naming.ClassCase
+    value: CamelCase
+  - key: readability-identifier-naming.StructCase
+    value: CamelCase
+  - key: readability-identifier-naming.FunctionCase
+    value: camelBack
+  - key: readability-identifier-naming.VariableCase
+    value: lower_case
+  - key: readability-identifier-naming.PrivateMemberSuffix
+    value: '_'
+  - key: readability-identifier-naming.ProtectedMemberSuffix
+    value: '_'
+  - key: readability-identifier-naming.ConstantCase
+    value: UPPER_CASE
+  - key: readability-identifier-naming.EnumConstantCase
+    value: UPPER_CASE
+  - key: readability-identifier-naming.MacroDefinitionCase
+    value: UPPER_CASE
+  - key: modernize-use-nullptr.NullMacros
+    value: 'NULL'
+  - key: readability-braces-around-statements.ShortStatementLines
+    value: '1'
+  # Allow Google Test/Mock naming conventions (SetUp, TearDown)
+  - key: readability-identifier-naming.FunctionIgnoredRegexp
+    value: '^(SetUp|TearDown)$'
