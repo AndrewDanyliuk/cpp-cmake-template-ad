@@ -20,7 +20,7 @@
 
 # C++ Standard (11, 14, 17, 20, 23)
 # Note: Ignored if CMAKE_CXX_STANDARD is set by preset or command line
-CXX_STANDARD=17
+CXX_STANDARD=11
 
 # Build Type (Debug, Release, RelWithDebInfo, MinSizeRel)
 # Note: Ignored if CMAKE_BUILD_TYPE is set by preset or command line
@@ -38,8 +38,8 @@ PACKAGE_MANAGER=CPM
 
 ENABLE_TESTING=ON
 ENABLE_COVERAGE=OFF
-ENABLE_CPPCHECK=OFF
-ENABLE_CLANG_TIDY=OFF
+ENABLE_CPPCHECK=ON
+ENABLE_CLANG_TIDY=ON
 ENABLE_CLANG_FORMAT=ON
 ENABLE_DOXYGEN=OFF
 ENABLE_CCACHE=ON
