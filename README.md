@@ -7,7 +7,7 @@ A modern C++ project template with comprehensive tooling support.
 - ✅ **Modern CMake** (3.23+) with preset support
 - ✅ **Multiple C++ standards** (11, 14, 17, 20) - easily configurable
 - ✅ **Package managers**: CPM (default) or vcpkg
-- ✅ **Testing**: Catch2 with Google Mock for mocking
+- ✅ **Testing**: Catch2 (auto-detects v2/v3) with Google Mock
 - ✅ **Coverage**: llvm-cov (primary) with gcov/lcov fallback
 - ✅ **Static analysis**: clang-tidy, cppcheck
 - ✅ **Code formatting**: clang-format
@@ -511,6 +511,14 @@ cmake --preset cpp20-linux-clang
 ```
 
 ## Troubleshooting
+
+### "Catch module not found"
+
+The template automatically uses:
+- **Catch2 v2** for C++11 projects
+- **Catch2 v3** for C++14+ projects
+
+If you see `include could not find requested file: Catch`, ensure your C++ standard is set correctly in `cmake.options` or your preset.
 
 ### "Compiler not found"
 

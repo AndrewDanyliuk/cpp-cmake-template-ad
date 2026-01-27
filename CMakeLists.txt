@@ -169,8 +169,14 @@ endif()
 
 if(ENABLE_TESTING)
     if(PACKAGE_MANAGER STREQUAL "CPM")
-        # Catch2
-        CPMAddPackage("gh:catchorg/Catch2@3.5.2")
+        # Use Catch2 v2 for C++11, v3 for C++14+
+        if(CMAKE_CXX_STANDARD EQUAL 11)
+            message(STATUS "Using Catch2 v2 for C++11 compatibility")
+            CPMAddPackage("gh:catchorg/Catch2@2.13.10")
+        else()
+            message(STATUS "Using Catch2 v3 for C++14+")
+            CPMAddPackage("gh:catchorg/Catch2@3.5.2")
+        endif()
         
         # Google Mock (for mocking)
         CPMAddPackage(
@@ -182,7 +188,10 @@ if(ENABLE_TESTING)
                 "gtest_force_shared_crt ON"
         )
     elseif(PACKAGE_MANAGER STREQUAL "VCPKG")
-        find_package(Catch2 3 REQUIRED)
+        find_package(Catch2 3 QUIET)
+        if(NOT Catch2_FOUND)
+            find_package(Catch2 2 REQUIRED)
+        endif()
         find_package(GTest REQUIRED)
     endif()
 endif()
