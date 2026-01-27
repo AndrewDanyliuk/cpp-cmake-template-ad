@@ -181,17 +181,17 @@ Set via `-D` flag or in `cmake.options`:
 
 | Option | Default | Description |
 |--------|---------|-------------|
-| `CMAKE_CXX_STANDARD` | 17 | C++ standard (11, 14, 17, 20) |
+| `CMAKE_CXX_STANDARD` | 11 | C++ standard (11, 14, 17, 20) |
 | `CMAKE_BUILD_TYPE` | Debug | Build type (Debug, Release, RelWithDebInfo) |
 | `PACKAGE_MANAGER` | CPM | Package manager (CPM, VCPKG, NONE) |
 | `ENABLE_TESTING` | ON | Enable Catch2 tests |
 | `ENABLE_COVERAGE` | OFF | Enable coverage reporting |
 | `COVERAGE_TOOL` | llvm-cov | Coverage tool (llvm-cov or gcov) |
-| `ENABLE_CLANG_TIDY` | OFF | Enable clang-tidy |
-| `ENABLE_CPPCHECK` | OFF | Enable cppcheck |
-| `ENABLE_CLANG_FORMAT` | OFF | Enable format targets |
+| `ENABLE_CLANG_TIDY` | ON | Enable clang-tidy |
+| `ENABLE_CPPCHECK` | ON | Enable cppcheck |
+| `ENABLE_CLANG_FORMAT` | ON | Enable format targets |
 | `ENABLE_DOXYGEN` | OFF | Enable documentation |
-| `ENABLE_CCACHE` | OFF | Enable compiler caching |
+| `ENABLE_CCACHE` | ON | Enable compiler caching |
 | `ENABLE_SANITIZER_ADDRESS` | OFF | Enable AddressSanitizer |
 | `ENABLE_SANITIZER_THREAD` | OFF | Enable ThreadSanitizer |
 | `ENABLE_SANITIZER_UNDEFINED` | OFF | Enable UBSan |
