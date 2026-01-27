@@ -12,7 +12,8 @@
       "binaryDir": "${sourceDir}/build/${presetName}",
       "installDir": "${sourceDir}/install/${presetName}",
       "cacheVariables": {
-        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "CMAKE_COLOR_DIAGNOSTICS": "ON"
       }
     },
     {
@@ -82,7 +83,6 @@
         "ENABLE_CPPCHECK": "ON",
         "ENABLE_CLANG_FORMAT": "ON",
         "ENABLE_CCACHE": "ON"
-        "CMAKE_COLOR_DIAGNOSTICS": "ON"
       }
     },
     {
