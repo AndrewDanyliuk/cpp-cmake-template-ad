@@ -82,6 +82,7 @@
         "ENABLE_CPPCHECK": "ON",
         "ENABLE_CLANG_FORMAT": "ON",
         "ENABLE_CCACHE": "ON"
+        "CMAKE_COLOR_DIAGNOSTICS": "ON"
       }
     },
     {
