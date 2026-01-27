@@ -80,7 +80,7 @@ ctest --preset linux-gcc-debug
 Edit `cmake.options` to set defaults:
 
 ```ini
-CXX_STANDARD=17
+CXX_STANDARD=11
 BUILD_TYPE=Debug
 PACKAGE_MANAGER=CPM
 ENABLE_TESTING=ON
@@ -98,7 +98,7 @@ ctest --test-dir build
 #### Manual Configuration
 
 ```bash
-cmake -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_STANDARD=17
+cmake -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_STANDARD=11
 cmake --build build
 ctest --test-dir build --output-on-failure
 ```
