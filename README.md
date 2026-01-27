@@ -77,14 +77,30 @@ ctest --preset linux-gcc-debug
 
 #### Using cmake.options (Quick Configuration)
 
-Edit `cmake.options` to set defaults:
-
+Edit `cmake.options` to set defaults: 
+Note: options set by a preset will override these.
 ```ini
 CXX_STANDARD=11
+
 BUILD_TYPE=Debug
+
 PACKAGE_MANAGER=CPM
+
 ENABLE_TESTING=ON
+ENABLE_COVERAGE=OFF
+ENABLE_CPPCHECK=ON
+ENABLE_CLANG_TIDY=ON
 ENABLE_CLANG_FORMAT=ON
+ENABLE_DOXYGEN=OFF
+ENABLE_CCACHE=ON
+
+COVERAGE_TOOL=llvm-cov
+
+ENABLE_SANITIZER_ADDRESS=OFF
+ENABLE_SANITIZER_THREAD=OFF
+ENABLE_SANITIZER_UNDEFINED=OFF
+ENABLE_SANITIZER_MEMORY=OFF
+ENABLE_SANITIZER_LEAK=OFF
 ```
 
 Then build:
@@ -186,12 +202,12 @@ Set via `-D` flag or in `cmake.options`:
 | `PACKAGE_MANAGER` | CPM | Package manager (CPM, VCPKG, NONE) |
 | `ENABLE_TESTING` | ON | Enable Catch2 tests |
 | `ENABLE_COVERAGE` | OFF | Enable coverage reporting |
-| `COVERAGE_TOOL` | llvm-cov | Coverage tool (llvm-cov or gcov) |
 | `ENABLE_CLANG_TIDY` | ON | Enable clang-tidy |
 | `ENABLE_CPPCHECK` | ON | Enable cppcheck |
 | `ENABLE_CLANG_FORMAT` | ON | Enable format targets |
 | `ENABLE_DOXYGEN` | OFF | Enable documentation |
 | `ENABLE_CCACHE` | ON | Enable compiler caching |
+| `COVERAGE_TOOL` | llvm-cov | Coverage tool (llvm-cov for clang or gcov for gcc/fallback) |
 | `ENABLE_SANITIZER_ADDRESS` | OFF | Enable AddressSanitizer |
 | `ENABLE_SANITIZER_THREAD` | OFF | Enable ThreadSanitizer |
 | `ENABLE_SANITIZER_UNDEFINED` | OFF | Enable UBSan |
