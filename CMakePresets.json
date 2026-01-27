@@ -167,7 +167,8 @@
     {
       "name": "linux-gcc-debug",
       "displayName": "Linux GCC Debug",
-      "inherits": ["linux-base", "cpm-base", "cpp17", "dev-mode"],
+      "description": "Uses C++ standard from cmake.options (default: C++17)",
+      "inherits": ["linux-base", "cpm-base", "dev-mode"],
       "cacheVariables": {
         "CMAKE_C_COMPILER": "gcc",
         "CMAKE_CXX_COMPILER": "g++",
@@ -177,7 +178,8 @@
     {
       "name": "linux-gcc-release",
       "displayName": "Linux GCC Release",
-      "inherits": ["linux-base", "cpm-base", "cpp17"],
+      "description": "Uses C++ standard from cmake.options (default: C++17)",
+      "inherits": ["linux-base", "cpm-base"],
       "cacheVariables": {
         "CMAKE_C_COMPILER": "gcc",
         "CMAKE_CXX_COMPILER": "g++",
@@ -188,7 +190,8 @@
     {
       "name": "linux-clang-debug",
       "displayName": "Linux Clang Debug",
-      "inherits": ["linux-base", "cpm-base", "cpp17", "dev-mode"],
+      "description": "Uses C++ standard from cmake.options (default: C++17)",
+      "inherits": ["linux-base", "cpm-base", "dev-mode"],
       "cacheVariables": {
         "CMAKE_C_COMPILER": "clang",
         "CMAKE_CXX_COMPILER": "clang++",
@@ -198,7 +201,8 @@
     {
       "name": "linux-clang-release",
       "displayName": "Linux Clang Release",
-      "inherits": ["linux-base", "cpm-base", "cpp17"],
+      "description": "Uses C++ standard from cmake.options (default: C++17)",
+      "inherits": ["linux-base", "cpm-base"],
       "cacheVariables": {
         "CMAKE_C_COMPILER": "clang",
         "CMAKE_CXX_COMPILER": "clang++",
@@ -209,7 +213,8 @@
     {
       "name": "linux-clang-coverage",
       "displayName": "Linux Clang Coverage (llvm-cov)",
-      "inherits": ["linux-base", "cpm-base", "cpp17", "coverage-llvm"],
+      "description": "Uses C++ standard from cmake.options (default: C++17)",
+      "inherits": ["linux-base", "cpm-base", "coverage-llvm"],
       "cacheVariables": {
         "CMAKE_C_COMPILER": "clang",
         "CMAKE_CXX_COMPILER": "clang++",
@@ -219,7 +224,8 @@
     {
       "name": "linux-gcc-coverage",
       "displayName": "Linux GCC Coverage (gcov)",
-      "inherits": ["linux-base", "cpm-base", "cpp17", "coverage-gcov"],
+      "description": "Uses C++ standard from cmake.options (default: C++17)",
+      "inherits": ["linux-base", "cpm-base", "coverage-gcov"],
       "cacheVariables": {
         "CMAKE_C_COMPILER": "gcc",
         "CMAKE_CXX_COMPILER": "g++",
@@ -229,7 +235,8 @@
     {
       "name": "linux-clang-asan",
       "displayName": "Linux Clang AddressSanitizer",
-      "inherits": ["linux-base", "cpm-base", "cpp17", "sanitizer-address"],
+      "description": "Uses C++ standard from cmake.options (default: C++17)",
+      "inherits": ["linux-base", "cpm-base", "sanitizer-address"],
       "cacheVariables": {
         "CMAKE_C_COMPILER": "clang",
         "CMAKE_CXX_COMPILER": "clang++",
@@ -239,7 +246,8 @@
     {
       "name": "linux-clang-tsan",
       "displayName": "Linux Clang ThreadSanitizer",
-      "inherits": ["linux-base", "cpm-base", "cpp17", "sanitizer-thread"],
+      "description": "Uses C++ standard from cmake.options (default: C++17)",
+      "inherits": ["linux-base", "cpm-base", "sanitizer-thread"],
       "cacheVariables": {
         "CMAKE_C_COMPILER": "clang",
         "CMAKE_CXX_COMPILER": "clang++",
@@ -249,7 +257,8 @@
     {
       "name": "linux-clang-ubsan",
       "displayName": "Linux Clang UndefinedBehaviorSanitizer",
-      "inherits": ["linux-base", "cpm-base", "cpp17", "sanitizer-undefined"],
+      "description": "Uses C++ standard from cmake.options (default: C++17)",
+      "inherits": ["linux-base", "cpm-base", "sanitizer-undefined"],
       "cacheVariables": {
         "CMAKE_C_COMPILER": "clang",
         "CMAKE_CXX_COMPILER": "clang++",
@@ -259,7 +268,8 @@
     {
       "name": "linux-clang-msan",
       "displayName": "Linux Clang MemorySanitizer",
-      "inherits": ["linux-base", "cpm-base", "cpp17", "sanitizer-memory"],
+      "description": "Uses C++ standard from cmake.options (default: C++17)",
+      "inherits": ["linux-base", "cpm-base", "sanitizer-memory"],
       "cacheVariables": {
         "CMAKE_C_COMPILER": "clang",
         "CMAKE_CXX_COMPILER": "clang++",
@@ -269,7 +279,8 @@
     {
       "name": "macos-clang-debug",
       "displayName": "macOS Clang Debug",
-      "inherits": ["macos-base", "cpm-base", "cpp17", "dev-mode"],
+      "description": "Uses C++ standard from cmake.options (default: C++17)",
+      "inherits": ["macos-base", "cpm-base", "dev-mode"],
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug"
       }
@@ -277,7 +288,8 @@
     {
       "name": "macos-clang-release",
       "displayName": "macOS Clang Release",
-      "inherits": ["macos-base", "cpm-base", "cpp17"],
+      "description": "Uses C++ standard from cmake.options (default: C++17)",
+      "inherits": ["macos-base", "cpm-base"],
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release",
         "ENABLE_TESTING": "ON"
@@ -286,7 +298,8 @@
     {
       "name": "macos-clang-coverage",
       "displayName": "macOS Clang Coverage (llvm-cov)",
-      "inherits": ["macos-base", "cpm-base", "cpp17", "coverage-llvm"],
+      "description": "Uses C++ standard from cmake.options (default: C++17)",
+      "inherits": ["macos-base", "cpm-base", "coverage-llvm"],
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug"
       }
@@ -294,7 +307,8 @@
     {
       "name": "windows-msvc-debug",
       "displayName": "Windows MSVC Debug",
-      "inherits": ["windows-base", "cpm-base", "cpp17", "dev-mode"],
+      "description": "Uses C++ standard from cmake.options (default: C++17)",
+      "inherits": ["windows-base", "cpm-base", "dev-mode"],
       "cacheVariables": {
         "CMAKE_C_COMPILER": "cl",
         "CMAKE_CXX_COMPILER": "cl",
@@ -304,7 +318,8 @@
     {
       "name": "windows-msvc-release",
       "displayName": "Windows MSVC Release",
-      "inherits": ["windows-base", "cpm-base", "cpp17"],
+      "description": "Uses C++ standard from cmake.options (default: C++17)",
+      "inherits": ["windows-base", "cpm-base"],
       "cacheVariables": {
         "CMAKE_C_COMPILER": "cl",
         "CMAKE_CXX_COMPILER": "cl",
@@ -315,7 +330,8 @@
     {
       "name": "windows-clang-debug",
       "displayName": "Windows Clang Debug",
-      "inherits": ["windows-base", "cpm-base", "cpp17", "dev-mode"],
+      "description": "Uses C++ standard from cmake.options (default: C++17)",
+      "inherits": ["windows-base", "cpm-base", "dev-mode"],
       "cacheVariables": {
         "CMAKE_C_COMPILER": "clang",
         "CMAKE_CXX_COMPILER": "clang++",
@@ -325,7 +341,8 @@
     {
       "name": "format-check",
       "displayName": "Format Check Only",
-      "inherits": ["base", "cpp17"],
+      "description": "Uses C++ standard from cmake.options (default: C++17)",
+      "inherits": ["base"],
       "generator": "Ninja",
       "cacheVariables": {
         "ENABLE_CLANG_FORMAT": "ON",
@@ -334,8 +351,42 @@
       }
     },
     {
+      "name": "cpp11-linux-gcc",
+      "displayName": "C++11 Linux GCC Debug",
+      "description": "Forces C++11 standard",
+      "inherits": ["linux-base", "cpm-base", "cpp11", "dev-mode"],
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "gcc",
+        "CMAKE_CXX_COMPILER": "g++",
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "cpp14-linux-clang",
+      "displayName": "C++14 Linux Clang Debug",
+      "description": "Forces C++14 standard",
+      "inherits": ["linux-base", "cpm-base", "cpp14", "dev-mode"],
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "clang",
+        "CMAKE_CXX_COMPILER": "clang++",
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "cpp17-linux-clang",
+      "displayName": "C++17 Linux Clang Debug",
+      "description": "Forces C++17 standard",
+      "inherits": ["linux-base", "cpm-base", "cpp17", "dev-mode"],
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "clang",
+        "CMAKE_CXX_COMPILER": "clang++",
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
       "name": "cpp20-linux-clang",
       "displayName": "C++20 Linux Clang Debug",
+      "description": "Forces C++20 standard",
       "inherits": ["linux-base", "cpm-base", "cpp20", "dev-mode"],
       "cacheVariables": {
         "CMAKE_C_COMPILER": "clang",
