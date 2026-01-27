@@ -7,7 +7,7 @@ A modern C++ project template with comprehensive tooling support.
 - ✅ **Modern CMake** (3.23+) with preset support
 - ✅ **Multiple C++ standards** (11, 14, 17, 20) - easily configurable
 - ✅ **Package managers**: CPM (default) or vcpkg
-- ✅ **Testing**: Catch2 (auto-detects v2/v3) with Google Mock
+- ✅ **Testing**: Catch2 (auto-detects v2/v3) backend to CTest. Mock framework: Google Mock
 - ✅ **Coverage**: llvm-cov (primary) with gcov/lcov fallback
 - ✅ **Static analysis**: clang-tidy, cppcheck
 - ✅ **Code formatting**: clang-format
@@ -15,7 +15,7 @@ A modern C++ project template with comprehensive tooling support.
 - ✅ **Documentation**: Doxygen with optional modern theme
 - ✅ **Compiler caching**: ccache support
 - ✅ **Cross-platform**: Linux, macOS, Windows
-- ✅ **CI-ready**: GitHub Actions workflow for auto-renaming
+- ✅ **CI-ready**: GitHub Actions workflow for auto-renaming and auto-formatting
 
 ## Quick Start
 
