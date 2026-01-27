@@ -98,6 +98,7 @@ if(PACKAGE_MANAGER STREQUAL "VCPKG")
     endif()
 elseif(PACKAGE_MANAGER STREQUAL "CPM")
     include(cmake/CPM.cmake)
+    set(CPM_USE_LOCAL_PACKAGES ON)
     message(STATUS "Using CPM for package management")
 elseif(PACKAGE_MANAGER STREQUAL "NONE")
     message(STATUS "Manual dependency management - no package manager")
@@ -123,7 +124,51 @@ if(ENABLE_COVERAGE)
 endif()
 
 ################################################################################
-# Static Analysis Tools
+# Dependencies (added BEFORE static analysis so they are excluded)
+################################################################################
+
+if(ENABLE_TESTING)
+    if(PACKAGE_MANAGER STREQUAL "CPM")
+        # Use Catch2 v2 for C++11, v3 for C++14+
+        if(CMAKE_CXX_STANDARD EQUAL 11)
+            message(STATUS "Using Catch2 v2 for C++11 compatibility")
+            CPMAddPackage(
+                NAME Catch2
+                GITHUB_REPOSITORY catchorg/Catch2
+                VERSION 2.13.10
+                SYSTEM YES
+            )
+        else()
+            message(STATUS "Using Catch2 v3 for C++14+")
+            CPMAddPackage(
+                NAME Catch2
+                GITHUB_REPOSITORY catchorg/Catch2
+                VERSION 3.5.2
+                SYSTEM YES
+            )
+        endif()
+
+        # Google Mock (for mocking)
+        CPMAddPackage(
+            NAME googletest
+            GITHUB_REPOSITORY google/googletest
+            VERSION 1.14.0
+            SYSTEM YES
+            OPTIONS
+                "INSTALL_GTEST OFF"
+                "gtest_force_shared_crt ON"
+        )
+    elseif(PACKAGE_MANAGER STREQUAL "VCPKG")
+        find_package(Catch2 3 QUIET)
+        if(NOT Catch2_FOUND)
+            find_package(Catch2 2 REQUIRED)
+        endif()
+        find_package(GTest REQUIRED)
+    endif()
+endif()
+
+################################################################################
+# Static Analysis Tools (added AFTER dependencies to exclude them)
 ################################################################################
 
 if(ENABLE_CLANG_TIDY)
@@ -161,39 +206,6 @@ configure_sanitizers(
 if(ENABLE_DOXYGEN)
     include(cmake/Doxygen.cmake)
     setup_doxygen()
-endif()
-
-################################################################################
-# Dependencies
-################################################################################
-
-if(ENABLE_TESTING)
-    if(PACKAGE_MANAGER STREQUAL "CPM")
-        # Use Catch2 v2 for C++11, v3 for C++14+
-        if(CMAKE_CXX_STANDARD EQUAL 11)
-            message(STATUS "Using Catch2 v2 for C++11 compatibility")
-            CPMAddPackage("gh:catchorg/Catch2@2.13.10")
-        else()
-            message(STATUS "Using Catch2 v3 for C++14+")
-            CPMAddPackage("gh:catchorg/Catch2@3.5.2")
-        endif()
-        
-        # Google Mock (for mocking)
-        CPMAddPackage(
-            NAME googletest
-            GITHUB_REPOSITORY google/googletest
-            VERSION 1.14.0
-            OPTIONS
-                "INSTALL_GTEST OFF"
-                "gtest_force_shared_crt ON"
-        )
-    elseif(PACKAGE_MANAGER STREQUAL "VCPKG")
-        find_package(Catch2 3 QUIET)
-        if(NOT Catch2_FOUND)
-            find_package(Catch2 2 REQUIRED)
-        endif()
-        find_package(GTest REQUIRED)
-    endif()
 endif()
 
 ################################################################################

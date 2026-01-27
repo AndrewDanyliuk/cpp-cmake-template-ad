@@ -1,3 +1,6 @@
+# Compiler warnings (applied only to project targets, not dependencies)
+include(${PROJECT_SOURCE_DIR}/cmake/CompilerWarnings.cmake)
+
 # Library target
 add_library(${PROJECT_NAME}_lib
     example.cpp
@@ -15,6 +18,11 @@ target_compile_features(${PROJECT_NAME}_lib
     PUBLIC
         cxx_std_${CMAKE_CXX_STANDARD}
 )
+
+# Apply strict warnings to this target only
+set_project_warnings(${PROJECT_NAME}_lib)
+
+# Optional: Add other libs you want warnings for here
 
 # Optional: Create an executable
 # Uncomment if you want a main executable

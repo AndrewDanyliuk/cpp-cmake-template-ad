@@ -1,3 +1,6 @@
+# Compiler warnings (applied only to project targets, not dependencies)
+include(${PROJECT_SOURCE_DIR}/cmake/CompilerWarnings.cmake)
+
 # Test executable
 add_executable(${PROJECT_NAME}_tests
     test_example.cpp
@@ -20,7 +23,10 @@ target_link_libraries(${PROJECT_NAME}_tests
 )
 
 # Pass Catch2 version to source code for conditional includes
-target_compile_definitions(${PROJECT_NAME}_tests PRIVATE CATCH2_VERSION=${CATCH2_VERSION})
+target_compile_definitions(${final-final_omg}_tests PRIVATE CATCH2_VERSION=${CATCH2_VERSION})
+
+# Apply strict warnings to this target only
+set_project_warnings(${PROJECT_NAME}_tests)
 
 # Enable CTest support
 include(CTest)
