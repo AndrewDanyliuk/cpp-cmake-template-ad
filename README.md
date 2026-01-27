@@ -575,6 +575,10 @@ jobs:
         run: ctest --preset linux-clang-debug
 ```
 
+## Resources
+### Testing
+Using mock frameworks for testing: [CFD University Software Testing Guide: Mocks](https://cfd.university/learn/the-complete-guide-to-software-testing-for-cfd-applications/how-to-use-mocking-in-cfd-test-code-using-gtest-and-gmock/#aioseo-parameter-reading-files)
+
 ## License
 
 [Choose your license]
