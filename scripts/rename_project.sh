@@ -27,18 +27,26 @@ replace_in_file() {
     local file="$1"
     if [[ "$OSTYPE" == "darwin"* ]]; then
         # macOS
+        # Protect CMake's ${PROJECT_NAME} variable from replacement
+        sed -i '' 's/\${PROJECT_NAME}/__CMAKE_PROJECT_NAME__/g' "$file"
         sed -i '' "s/PROJECT_NAME_LOWER/$NEW_NAME_LOWER/g" "$file"
         sed -i '' "s/PROJECT_NAME_UPPER/$NEW_NAME_UPPER/g" "$file"
         sed -i '' "s/PROJECT_NAME_CAMEL/$NEW_NAME_CAMEL/g" "$file"
         sed -i '' "s/project-name/$NEW_NAME_HYPHEN/g" "$file"
         sed -i '' "s/PROJECT_NAME/$NEW_NAME/g" "$file"
+        # Restore CMake's ${PROJECT_NAME} variable
+        sed -i '' 's/__CMAKE_PROJECT_NAME__/${PROJECT_NAME}/g' "$file"
     else
         # Linux
+        # Protect CMake's ${PROJECT_NAME} variable from replacement
+        sed -i 's/\${PROJECT_NAME}/__CMAKE_PROJECT_NAME__/g' "$file"
         sed -i "s/PROJECT_NAME_LOWER/$NEW_NAME_LOWER/g" "$file"
         sed -i "s/PROJECT_NAME_UPPER/$NEW_NAME_UPPER/g" "$file"
         sed -i "s/PROJECT_NAME_CAMEL/$NEW_NAME_CAMEL/g" "$file"
         sed -i "s/project-name/$NEW_NAME_HYPHEN/g" "$file"
         sed -i "s/PROJECT_NAME/$NEW_NAME/g" "$file"
+        # Restore CMake's ${PROJECT_NAME} variable
+        sed -i 's/__CMAKE_PROJECT_NAME__/${PROJECT_NAME}/g' "$file"
     fi
 }
 
