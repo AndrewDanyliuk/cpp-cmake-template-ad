@@ -19,7 +19,7 @@ public:
      * @brief Get the current value
      * @return Current value
      */
-    [[nodiscard]] int getValue() const;
+    int getValue() const;
 
     /**
      * @brief Set a new value
