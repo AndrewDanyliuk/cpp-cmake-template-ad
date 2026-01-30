@@ -27,12 +27,6 @@ HeaderFilterRegex: '.*(src|include|tests)/.*'
 FormatStyle: file
 
 CheckOptions:
-  - key: bugprone-argument-comment.CommentBoolLiterals
-    value: true
-  - key: bugprone-argument-comment.CommentIntegerLiterals
-    value: true
-  - key: bugprone-argument-comment.CommentFloatLiterals
-    value: true
   - key: readability-identifier-naming.ClassCase
     value: CamelCase
   - key: readability-identifier-naming.StructCase
