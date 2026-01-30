@@ -79,7 +79,7 @@ function(setup_llvm_coverage)
     )
 
     # Get test executable name
-    set(TEST_EXECUTABLE "${CMAKE_BINARY_DIR}/tests/__CMAKE_reee___tests")
+    set(TEST_EXECUTABLE "${CMAKE_BINARY_DIR}/tests/${PROJECT_NAME}_tests")
 
     # Add coverage-report target for llvm-cov
     add_custom_target(coverage-report
