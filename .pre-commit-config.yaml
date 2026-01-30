@@ -1,0 +1,41 @@
+repos:
+  - repo: https://github.com/pocc/pre-commit-hooks
+    rev: v1.3.5
+    hooks:
+      - id: clang-format
+        args: [--style=file, -i]
+        types_or: [c, c++]
+
+      - id: clang-tidy
+        args:
+          - --config-file=.clang-tidy
+          - -p=build
+          - --warnings-as-errors=*
+        types_or: [c, c++]
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+        types_or: [c, c++, cmake]
+      - id: end-of-file-fixer
+        types_or: [c, c++, cmake]
+      - id: check-yaml
+      - id: check-added-large-files
+        args: ['--maxkb=500']
+
+  # cppcheck using compile database for proper macro definitions
+  - repo: local
+    hooks:
+      - id: cppcheck
+        name: cppcheck
+        entry: cppcheck
+        language: system
+        types_or: [c, c++]
+        args:
+          - --project=build/compile_commands.json
+          - --error-exitcode=1
+          - --enable=warning,style,performance,portability
+          - --suppress=missingIncludeSystem
+          - --suppress=unmatchedSuppression
+          - --inline-suppr

@@ -67,28 +67,43 @@ function(setup_llvm_coverage)
     add_compile_options(${COVERAGE_COMPILE_FLAGS})
     add_link_options(${COVERAGE_LINK_FLAGS})
 
+    # Coverage output directory
+    set(COVERAGE_OUTPUT_DIR "${PROJECT_SOURCE_DIR}/out/coverage")
+
     # Create coverage targets
     add_custom_target(coverage-clean
-        COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_BINARY_DIR}/coverage
-        COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/coverage
+        COMMAND ${CMAKE_COMMAND} -E remove_directory ${COVERAGE_OUTPUT_DIR}
+        COMMAND ${CMAKE_COMMAND} -E make_directory ${COVERAGE_OUTPUT_DIR}
+        COMMAND ${CMAKE_COMMAND} -E touch ${COVERAGE_OUTPUT_DIR}/.keep
         COMMENT "Cleaning coverage data"
+    )
+
+    # Get test executable name
+    set(TEST_EXECUTABLE "${CMAKE_BINARY_DIR}/tests/__CMAKE_reee___tests")
+
+    # Add coverage-report target for llvm-cov
+    add_custom_target(coverage-report
+        COMMAND ${LLVM_PROFDATA_EXECUTABLE} merge -sparse
+            ${CMAKE_BINARY_DIR}/default.profraw
+            -o ${CMAKE_BINARY_DIR}/default.profdata
+        COMMAND ${LLVM_COV_EXECUTABLE} show ${TEST_EXECUTABLE}
+            -instr-profile=${CMAKE_BINARY_DIR}/default.profdata
+            -format=html
+            -output-dir=${COVERAGE_OUTPUT_DIR}
+            -show-line-counts-or-regions
+            -ignore-filename-regex='.*/tests/.*'
+            -ignore-filename-regex='.*/build/.*'
+            -Xdemangler=c++filt -Xdemangler=-n
+        COMMENT "Generating HTML coverage report in ${COVERAGE_OUTPUT_DIR}"
     )
 
     # Instructions for generating coverage
     message(STATUS "")
     message(STATUS "To generate coverage report:")
     message(STATUS "  1. Build with coverage enabled")
-    message(STATUS "  2. Run tests: ctest")
-    message(STATUS "  3. Merge raw profiles:")
-    message(STATUS "     ${LLVM_PROFDATA_EXECUTABLE} merge -sparse default.profraw -o default.profdata")
-    message(STATUS "  4. Generate report:")
-    message(STATUS "     ${LLVM_COV_EXECUTABLE} show ./tests/<test_executable> -instr-profile=default.profdata")
-    message(STATUS "  5. Generate HTML report:")
-    message(STATUS "     ${LLVM_COV_EXECUTABLE} show ./tests/<test_executable> \\")
-    message(STATUS "       -instr-profile=default.profdata \\")
-    message(STATUS "       -format=html -output-dir=coverage \\")
-    message(STATUS "       -show-line-counts-or-regions \\")
-    message(STATUS "       -Xdemangler=c++filt -Xdemangler=-n")
+    message(STATUS "  2. Run tests: ctest (or run test executable directly)")
+    message(STATUS "  3. Generate report: cmake --build . --target coverage-report")
+    message(STATUS "  4. View report: open ${COVERAGE_OUTPUT_DIR}/index.html")
     message(STATUS "")
 
     # Common llvm-cov options:
@@ -141,12 +156,16 @@ function(setup_gcov_coverage)
     add_compile_options(${COVERAGE_COMPILE_FLAGS})
     add_link_options(${COVERAGE_LINK_FLAGS})
 
+    # Coverage output directory
+    set(COVERAGE_OUTPUT_DIR "${PROJECT_SOURCE_DIR}/out/coverage")
+
     # Create coverage targets
     add_custom_target(coverage-clean
         COMMAND find ${CMAKE_BINARY_DIR} -type f -name '*.gcda' -delete
         COMMAND find ${CMAKE_BINARY_DIR} -type f -name '*.gcno' -delete
-        COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_BINARY_DIR}/coverage
-        COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/coverage
+        COMMAND ${CMAKE_COMMAND} -E remove_directory ${COVERAGE_OUTPUT_DIR}
+        COMMAND ${CMAKE_COMMAND} -E make_directory ${COVERAGE_OUTPUT_DIR}
+        COMMAND ${CMAKE_COMMAND} -E touch ${COVERAGE_OUTPUT_DIR}/.keep
         COMMENT "Cleaning coverage data (.gcda, .gcno files)"
     )
 
@@ -163,10 +182,9 @@ function(setup_gcov_coverage)
                 --output-file ${CMAKE_BINARY_DIR}/coverage.info
             COMMAND ${GENHTML_EXECUTABLE}
                 ${CMAKE_BINARY_DIR}/coverage.info
-                --output-directory ${CMAKE_BINARY_DIR}/coverage
+                --output-directory ${COVERAGE_OUTPUT_DIR}
                 --demangle-cpp
-            COMMENT "Generating HTML coverage report in ${CMAKE_BINARY_DIR}/coverage"
-            DEPENDS coverage-clean
+            COMMENT "Generating HTML coverage report in ${COVERAGE_OUTPUT_DIR}"
         )
 
         message(STATUS "")
@@ -174,7 +192,7 @@ function(setup_gcov_coverage)
         message(STATUS "  1. Build with coverage enabled")
         message(STATUS "  2. Run tests: ctest")
         message(STATUS "  3. Generate report: cmake --build . --target coverage-report")
-        message(STATUS "  4. View report: open coverage/index.html")
+        message(STATUS "  4. View report: open ${COVERAGE_OUTPUT_DIR}/index.html")
         message(STATUS "")
     else()
         message(STATUS "")

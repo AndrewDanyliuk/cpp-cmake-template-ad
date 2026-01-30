@@ -9,10 +9,11 @@ A modern C++ project template with comprehensive tooling support.
 - ✅ **Package managers**: CPM (default) or vcpkg
 - ✅ **Testing**: Catch2 (auto-detects v2/v3) backend to CTest. Mock framework: Google Mock
 - ✅ **Coverage**: llvm-cov (primary) with gcov/lcov fallback
-- ✅ **Static analysis**: clang-tidy, cppcheck
-- ✅ **Code formatting**: clang-format
+- ✅ **Pre-commit hooks**: clang-format, clang-tidy, cppcheck run automatically on commit
+- ✅ **Static analysis**: clang-tidy, cppcheck (via pre-commit or manual targets)
+- ✅ **Code formatting**: clang-format (via pre-commit or manual targets)
 - ✅ **Sanitizers**: Address, Thread, Undefined, Memory, Leak
-- ✅ **Documentation**: Doxygen with optional modern theme
+- ✅ **Documentation**: Doxygen with optional modern theme (outputs to `out/docs`)
 - ✅ **Compiler caching**: ccache support
 - ✅ **Cross-platform**: Linux, macOS, Windows
 - ✅ **CI-ready**: GitHub Actions workflow for auto-renaming and auto-formatting
@@ -25,6 +26,9 @@ A modern C++ project template with comprehensive tooling support.
 - CMake 3.23 or higher
 - C++ compiler (GCC 7+, Clang 6+, MSVC 2019+)
 - Ninja (recommended) or Make
+
+**Recommended:**
+- pre-commit (for automatic code quality checks on commit)
 
 **Optional:**
 - clang-format (for code formatting)
@@ -41,11 +45,12 @@ A modern C++ project template with comprehensive tooling support.
 ```bash
 sudo apt-get install cmake ninja-build gcc g++ clang
 sudo apt-get install clang-format clang-tidy cppcheck ccache doxygen lcov
+pip install pre-commit
 ```
 
 **macOS:**
 ```bash
-brew install cmake ninja gcc llvm
+brew install cmake ninja gcc llvm pre-commit
 brew install clang-format cppcheck ccache doxygen lcov
 ```
 
@@ -53,6 +58,7 @@ brew install clang-format cppcheck ccache doxygen lcov
 ```powershell
 choco install cmake ninja llvm visualstudio2022buildtools
 choco install ccache doxygen.install
+pip install pre-commit
 ```
 
 </details>
@@ -77,7 +83,7 @@ ctest --preset linux-gcc-debug
 
 #### Using cmake.options (Quick Configuration)
 
-Edit `cmake.options` to set defaults: 
+Edit `cmake.options` to set defaults:
 Note: options set by a preset will override these.
 ```ini
 CXX_STANDARD=11
@@ -88,11 +94,12 @@ PACKAGE_MANAGER=CPM
 
 ENABLE_TESTING=ON
 ENABLE_COVERAGE=OFF
-ENABLE_CPPCHECK=ON
-ENABLE_CLANG_TIDY=ON
-ENABLE_CLANG_FORMAT=ON
+ENABLE_CPPCHECK=OFF        # Handled by pre-commit
+ENABLE_CLANG_TIDY=OFF      # Handled by pre-commit
+ENABLE_CLANG_FORMAT=OFF    # Handled by pre-commit
 ENABLE_DOXYGEN=OFF
 ENABLE_CCACHE=ON
+ENABLE_PRE_COMMIT=ON       # Auto-install pre-commit hooks
 
 COVERAGE_TOOL=llvm-cov
 
@@ -125,14 +132,16 @@ ctest --test-dir build --output-on-failure
 
 | Preset | Description |
 |--------|-------------|
-| `linux-gcc-debug` | Linux GCC with dev tools (tidy, cppcheck, format, ccache) |
+| `linux-gcc-debug` | Linux GCC with ccache and pre-commit hooks |
 | `linux-gcc-release` | Linux GCC optimized build with tests |
-| `linux-clang-debug` | Linux Clang with dev tools |
+| `linux-clang-debug` | Linux Clang with ccache and pre-commit hooks |
 | `linux-clang-release` | Linux Clang optimized build |
-| `macos-clang-debug` | macOS Clang with dev tools |
+| `macos-clang-debug` | macOS Clang with ccache and pre-commit hooks |
 | `macos-clang-release` | macOS Clang optimized build |
-| `windows-msvc-debug` | Windows MSVC with dev tools |
+| `windows-msvc-debug` | Windows MSVC with ccache and pre-commit hooks |
 | `windows-msvc-release` | Windows MSVC optimized build |
+
+**Note:** Dev presets use pre-commit for static analysis instead of build-time checks. This avoids duplicate warnings and keeps builds fast.
 
 ### Coverage Presets
 
@@ -165,28 +174,35 @@ PROJECT_NAME/
 ├── CMakeLists.txt           # Main build configuration
 ├── CMakePresets.json        # CMake preset definitions
 ├── cmake.options            # Quick configuration (optional)
-├── vcpkg.json              # vcpkg dependencies
-├── .clang-format           # Code formatting rules
-├── .clang-tidy             # Static analysis rules
-├── cmake/                  # CMake helper modules
-│   ├── Coverage.cmake      # Coverage configuration
-│   ├── Sanitizers.cmake    # Sanitizer setup
-│   ├── ClangTidy.cmake     # clang-tidy setup
-│   ├── Cppcheck.cmake      # cppcheck setup
-│   ├── ClangFormat.cmake   # clang-format targets
-│   ├── Ccache.cmake        # Compiler caching
-│   ├── Doxygen.cmake       # Documentation generation
-│   ├── CPM.cmake           # CPM package manager
+├── vcpkg.json               # vcpkg dependencies
+├── .clang-format            # Code formatting rules
+├── .clang-tidy              # Static analysis rules
+├── .pre-commit-config.yaml  # Pre-commit hook configuration
+├── cmake/                   # CMake helper modules
+│   ├── Coverage.cmake       # Coverage configuration
+│   ├── Sanitizers.cmake     # Sanitizer setup
+│   ├── ClangTidy.cmake      # clang-tidy setup
+│   ├── Cppcheck.cmake       # cppcheck setup
+│   ├── ClangFormat.cmake    # clang-format targets
+│   ├── Ccache.cmake         # Compiler caching
+│   ├── Doxygen.cmake        # Documentation generation
+│   ├── CPM.cmake            # CPM package manager
+│   ├── PreCommit.cmake      # Pre-commit hook installation
 │   └── PreventInSourceBuilds.cmake
-├── include/                # Public headers
+├── include/                 # Public headers
 │   └── PROJECT_NAME_LOWER/
 │       └── example.h
-├── src/                    # Implementation files
+├── src/                     # Implementation files
 │   ├── CMakeLists.txt
 │   └── example.cpp
-└── tests/                  # Test files
-    ├── CMakeLists.txt
-    └── test_example.cpp
+├── tests/                   # Test files
+│   ├── CMakeLists.txt
+│   └── test_example.cpp
+└── out/                     # Generated output (gitignored except .keep)
+    ├── docs/                # Doxygen documentation
+    │   └── .keep
+    └── coverage/            # Coverage reports
+        └── .keep
 ```
 
 ## Configuration Options
@@ -202,9 +218,10 @@ Set via `-D` flag or in `cmake.options`:
 | `PACKAGE_MANAGER` | CPM | Package manager (CPM, VCPKG, NONE) |
 | `ENABLE_TESTING` | ON | Enable Catch2 tests |
 | `ENABLE_COVERAGE` | OFF | Enable coverage reporting |
-| `ENABLE_CLANG_TIDY` | ON | Enable clang-tidy |
-| `ENABLE_CPPCHECK` | ON | Enable cppcheck |
-| `ENABLE_CLANG_FORMAT` | ON | Enable format targets |
+| `ENABLE_CLANG_TIDY` | OFF | Enable clang-tidy during build (use pre-commit instead) |
+| `ENABLE_CPPCHECK` | OFF | Enable cppcheck during build (use pre-commit instead) |
+| `ENABLE_CLANG_FORMAT` | OFF | Enable format targets (use pre-commit instead) |
+| `ENABLE_PRE_COMMIT` | ON | Auto-install pre-commit hooks on cmake configure |
 | `ENABLE_DOXYGEN` | OFF | Enable documentation |
 | `ENABLE_CCACHE` | ON | Enable compiler caching |
 | `COVERAGE_TOOL` | llvm-cov | Coverage tool (llvm-cov for clang or gcov for gcc/fallback) |
@@ -307,6 +324,8 @@ ctest --test-dir build -j 4
 
 ## Coverage
 
+Coverage reports are generated to `out/coverage/`.
+
 ### Generating Coverage Reports
 
 **With llvm-cov (Clang):**
@@ -316,21 +335,14 @@ ctest --test-dir build -j 4
 cmake --preset linux-clang-coverage
 cmake --build --preset linux-clang-coverage
 
-# Run tests
+# Run tests (generates default.profraw)
 ctest --preset linux-clang-coverage
 
-# Merge raw profiles
-llvm-profdata merge -sparse default.profraw -o default.profdata
-
 # Generate HTML report
-llvm-cov show ./build/linux-clang-coverage/tests/PROJECT_NAME_tests \
-  -instr-profile=default.profdata \
-  -format=html \
-  -output-dir=coverage \
-  -show-line-counts-or-regions
+cmake --build build/linux-clang-coverage --target coverage-report
 
 # View report
-open coverage/index.html
+open out/coverage/index.html
 ```
 
 **With gcov/lcov (GCC):**
@@ -343,55 +355,64 @@ cmake --build --preset linux-gcc-coverage
 # Run tests
 ctest --preset linux-gcc-coverage
 
-# Generate report (if lcov installed)
+# Generate report (requires lcov)
 cmake --build build/linux-gcc-coverage --target coverage-report
 
 # View report
-open build/linux-gcc-coverage/coverage/index.html
+open out/coverage/index.html
 ```
 
-## Code Formatting
-
-### Format All Code
+### Cleaning Coverage Data
 
 ```bash
-cmake --build build --target format
+cmake --build build/<preset> --target coverage-clean
 ```
 
-### Check Formatting (CI)
+## Code Formatting & Static Analysis
+
+By default, code formatting (clang-format) and static analysis (clang-tidy, cppcheck) run automatically via **pre-commit hooks** when you commit changes. This keeps builds fast while ensuring code quality.
+
+### Pre-commit Hooks (Default)
+
+Pre-commit hooks are automatically installed when you run `cmake -B build` (if `ENABLE_PRE_COMMIT=ON`).
+
+The following checks run on every commit:
+- **clang-format**: Auto-formats staged C/C++ files
+- **clang-tidy**: Static analysis using `.clang-tidy` config
+- **cppcheck**: Additional static analysis using compile database
 
 ```bash
-cmake --build build --target format-check
+# Manual run on all files
+pre-commit run --all-files
+
+# Run specific hook
+pre-commit run clang-format --all-files
+pre-commit run clang-tidy --all-files
+pre-commit run cppcheck --all-files
 ```
 
-## Static Analysis
+### Manual CMake Targets (Optional)
 
-### clang-tidy
-
-Runs automatically during build if `ENABLE_CLANG_TIDY=ON`:
+If you prefer to run these tools via CMake targets instead of pre-commit, enable them:
 
 ```bash
-cmake --preset linux-clang-debug  # Includes clang-tidy
-cmake --build --preset linux-clang-debug
+cmake -B build -DENABLE_CLANG_FORMAT=ON -DENABLE_CLANG_TIDY=ON -DENABLE_CPPCHECK=ON
 ```
 
-Manual check:
+Then use:
 ```bash
+cmake --build build --target format          # Format all code
+cmake --build build --target format-check    # Check formatting (CI)
 cmake --build build --target clang-tidy-check
-```
-
-### cppcheck
-
-Runs automatically during build if `ENABLE_CPPCHECK=ON`:
-
-```bash
-cmake -B build -DENABLE_CPPCHECK=ON
-cmake --build build
-```
-
-Manual check:
-```bash
 cmake --build build --target cppcheck-check
+```
+
+### During-Build Analysis (Not Recommended)
+
+You can enable clang-tidy/cppcheck to run during compilation, but this causes duplicate warnings with GCC and slows builds:
+
+```bash
+cmake -B build -DENABLE_CLANG_TIDY=ON -DENABLE_CPPCHECK=ON
 ```
 
 ## Sanitizers
@@ -424,12 +445,14 @@ ctest --preset linux-clang-ubsan
 
 ## Documentation
 
+Documentation is generated to `out/docs/`.
+
 ### Generate Doxygen Docs
 
 ```bash
 cmake -B build -DENABLE_DOXYGEN=ON
 cmake --build build --target docs
-open build/html/index.html
+open out/docs/index.html
 ```
 
 ### Modern Doxygen Theme
@@ -556,12 +579,36 @@ Or use CPM instead (default).
 
 ### "clang-tidy errors during build"
 
-Disable it temporarily:
+By default, clang-tidy runs via pre-commit, not during build. If you've enabled build-time analysis:
 ```bash
 cmake -B build -DENABLE_CLANG_TIDY=OFF
 ```
 
 Or fix the issues (recommended).
+
+### "pre-commit not found"
+
+Install pre-commit:
+```bash
+pip install pre-commit
+```
+
+Or disable automatic hook installation:
+```bash
+cmake -B build -DENABLE_PRE_COMMIT=OFF
+```
+
+### "pre-commit hooks failing"
+
+Ensure you've built the project at least once (creates `compile_commands.json`):
+```bash
+cmake -B build && cmake --build build
+```
+
+Then run pre-commit:
+```bash
+pre-commit run --all-files
+```
 
 ### "Coverage not working"
 
@@ -579,22 +626,39 @@ name: CI
 on: [push, pull_request]
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ninja-build clang clang-format clang-tidy cppcheck
+          pip install pre-commit
+
+      - name: Configure (generates compile_commands.json)
+        run: cmake -B build -DENABLE_PRE_COMMIT=OFF
+
+      - name: Run pre-commit
+        run: pre-commit run --all-files
+
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y ninja-build clang
-      
+
       - name: Configure
         run: cmake --preset linux-clang-debug
-      
+
       - name: Build
         run: cmake --build --preset linux-clang-debug
-      
+
       - name: Test
         run: ctest --preset linux-clang-debug
 ```
@@ -622,3 +686,4 @@ This template uses:
 - [Catch2](https://github.com/catchorg/Catch2)
 - [Google Test/Mock](https://github.com/google/googletest)
 - [CPM.cmake](https://github.com/cpm-cmake/CPM.cmake)
+- [pre-commit](https://pre-commit.com/)

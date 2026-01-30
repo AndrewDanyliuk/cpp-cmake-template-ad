@@ -1,8 +1,16 @@
 # Build directories
 build/
 install/
-out/
 cmake-build-*/
+
+# Output directories (docs, coverage)
+out/*
+!out/docs/
+!out/coverage/
+out/docs/*
+!out/docs/.keep
+out/coverage/*
+!out/coverage/.keep
 
 # IDE files
 .vscode/

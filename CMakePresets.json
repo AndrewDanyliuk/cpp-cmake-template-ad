@@ -79,10 +79,11 @@
       "hidden": true,
       "cacheVariables": {
         "ENABLE_TESTING": "ON",
-        "ENABLE_CLANG_TIDY": "ON",
-        "ENABLE_CPPCHECK": "ON",
-        "ENABLE_CLANG_FORMAT": "ON",
-        "ENABLE_CCACHE": "ON"
+        "ENABLE_CLANG_TIDY": "OFF",
+        "ENABLE_CPPCHECK": "OFF",
+        "ENABLE_CLANG_FORMAT": "OFF",
+        "ENABLE_CCACHE": "ON",
+        "ENABLE_PRE_COMMIT": "ON"
       }
     },
     {

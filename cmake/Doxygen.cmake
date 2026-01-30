@@ -80,6 +80,10 @@ function(setup_doxygen)
         message(STATUS "Using default Doxygen theme")
     endif()
 
+    # Output directory
+    set(DOXYGEN_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/out/docs")
+    set(DOXYGEN_HTML_OUTPUT ".")
+
     # Add doxygen target
     doxygen_add_docs(
         docs
@@ -90,5 +94,5 @@ function(setup_doxygen)
 
     message(STATUS "Doxygen documentation enabled")
     message(STATUS "  Generate docs: cmake --build . --target docs")
-    message(STATUS "  Output:        ${CMAKE_CURRENT_BINARY_DIR}/html/index.html")
+    message(STATUS "  Output:        ${PROJECT_SOURCE_DIR}/out/docs/index.html")
 endfunction()

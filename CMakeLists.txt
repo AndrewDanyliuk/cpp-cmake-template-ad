@@ -187,6 +187,11 @@ if(ENABLE_CLANG_FORMAT)
 endif()
 
 ################################################################################
+# Pre-commit Hooks
+################################################################################
+
+include(cmake/PreCommit.cmake)
+setup_pre_commit()
 # Sanitizers
 ################################################################################
 
@@ -247,6 +252,7 @@ message(STATUS "  Cppcheck:           ${ENABLE_CPPCHECK}")
 message(STATUS "  Clang-Format:       ${ENABLE_CLANG_FORMAT}")
 message(STATUS "  Doxygen:            ${ENABLE_DOXYGEN}")
 message(STATUS "  Ccache:             ${ENABLE_CCACHE}")
+message(STATUS "  Pre-commit:         ${ENABLE_PRE_COMMIT}")
 message(STATUS "")
 message(STATUS "Sanitizers:")
 message(STATUS "  Address:            ${ENABLE_SANITIZER_ADDRESS}")
