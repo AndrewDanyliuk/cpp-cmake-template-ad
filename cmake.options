@@ -57,3 +57,23 @@ ENABLE_SANITIZER_THREAD=OFF
 ENABLE_SANITIZER_UNDEFINED=OFF
 ENABLE_SANITIZER_MEMORY=OFF
 ENABLE_SANITIZER_LEAK=OFF
+
+# Security Hardening
+# Applies security-focused compiler/linker flags (stack protection, FORTIFY_SOURCE,
+# RELRO, PIE/PIC, control flow integrity, etc.)
+# Note: Best used with Release builds for production binaries
+ENABLE_HARDENING=OFF
+
+# Full Hardening (includes speculative execution mitigations)
+# Note: May impact performance. Only enable if security is critical.
+ENABLE_HARDENING_FULL=OFF
+
+# Interprocedural Optimization / Link-Time Optimization
+# Enables whole-program optimization for better performance (5-20% improvement)
+# Note: Significantly increases link time. Best for Release builds only.
+ENABLE_IPO=OFF
+
+# ThinLTO (faster linking alternative to full LTO)
+# Uses less memory and links faster than full LTO with slightly less optimization
+# Note: Only used when ENABLE_IPO=ON. Recommended for iterative development.
+ENABLE_IPO_THIN=OFF

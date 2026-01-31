@@ -137,6 +137,36 @@
       }
     },
     {
+      "name": "hardening",
+      "hidden": true,
+      "cacheVariables": {
+        "ENABLE_HARDENING": "ON"
+      }
+    },
+    {
+      "name": "hardening-full",
+      "hidden": true,
+      "cacheVariables": {
+        "ENABLE_HARDENING": "ON",
+        "ENABLE_HARDENING_FULL": "ON"
+      }
+    },
+    {
+      "name": "ipo",
+      "hidden": true,
+      "cacheVariables": {
+        "ENABLE_IPO": "ON"
+      }
+    },
+    {
+      "name": "ipo-thin",
+      "hidden": true,
+      "cacheVariables": {
+        "ENABLE_IPO": "ON",
+        "ENABLE_IPO_THIN": "ON"
+      }
+    },
+    {
       "name": "linux-base",
       "hidden": true,
       "generator": "Ninja",
@@ -365,6 +395,48 @@
         "CMAKE_CXX_COMPILER": "clang++",
         "CMAKE_BUILD_TYPE": "Debug"
       }
+    },
+    {
+      "name": "linux-gcc-release-hardened",
+      "displayName": "Linux GCC Release (Hardened + LTO)",
+      "inherits": ["linux-base", "cpm-base", "hardening", "ipo"],
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "gcc",
+        "CMAKE_CXX_COMPILER": "g++",
+        "CMAKE_BUILD_TYPE": "Release",
+        "ENABLE_TESTING": "ON"
+      }
+    },
+    {
+      "name": "linux-clang-release-hardened",
+      "displayName": "Linux Clang Release (Hardened + ThinLTO)",
+      "inherits": ["linux-base", "cpm-base", "hardening", "ipo-thin"],
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "clang",
+        "CMAKE_CXX_COMPILER": "clang++",
+        "CMAKE_BUILD_TYPE": "Release",
+        "ENABLE_TESTING": "ON"
+      }
+    },
+    {
+      "name": "macos-clang-release-hardened",
+      "displayName": "macOS Clang Release (Hardened + ThinLTO)",
+      "inherits": ["macos-base", "cpm-base", "hardening", "ipo-thin"],
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "ENABLE_TESTING": "ON"
+      }
+    },
+    {
+      "name": "windows-msvc-release-hardened",
+      "displayName": "Windows MSVC Release (Hardened + LTO)",
+      "inherits": ["windows-base", "cpm-base", "hardening", "ipo"],
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "cl",
+        "CMAKE_CXX_COMPILER": "cl",
+        "CMAKE_BUILD_TYPE": "Release",
+        "ENABLE_TESTING": "ON"
+      }
     }
   ],
   "buildPresets": [
@@ -403,6 +475,22 @@
     {
       "name": "windows-msvc-release",
       "configurePreset": "windows-msvc-release"
+    },
+    {
+      "name": "linux-gcc-release-hardened",
+      "configurePreset": "linux-gcc-release-hardened"
+    },
+    {
+      "name": "linux-clang-release-hardened",
+      "configurePreset": "linux-clang-release-hardened"
+    },
+    {
+      "name": "macos-clang-release-hardened",
+      "configurePreset": "macos-clang-release-hardened"
+    },
+    {
+      "name": "windows-msvc-release-hardened",
+      "configurePreset": "windows-msvc-release-hardened"
     }
   ],
   "testPresets": [

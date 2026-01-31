@@ -76,6 +76,14 @@ option(ENABLE_SANITIZER_UNDEFINED "Enable undefined behavior sanitizer" OFF)
 option(ENABLE_SANITIZER_MEMORY "Enable memory sanitizer" OFF)
 option(ENABLE_SANITIZER_LEAK "Enable leak sanitizer" OFF)
 
+# Security hardening options
+option(ENABLE_HARDENING "Enable security hardening compiler/linker flags" OFF)
+option(ENABLE_HARDENING_FULL "Enable full hardening including speculative execution mitigations (may impact performance)" OFF)
+
+# Link-Time Optimization options
+option(ENABLE_IPO "Enable Interprocedural Optimization / Link-Time Optimization" OFF)
+option(ENABLE_IPO_THIN "Use ThinLTO instead of full LTO (faster linking)" OFF)
+
 # Coverage tool selection
 set(COVERAGE_TOOL "llvm-cov" CACHE STRING "Coverage tool to use (llvm-cov or gcov)")
 set_property(CACHE COVERAGE_TOOL PROPERTY STRINGS llvm-cov gcov)
@@ -205,6 +213,24 @@ configure_sanitizers(
 )
 
 ################################################################################
+# Security Hardening
+################################################################################
+
+if(ENABLE_HARDENING)
+    include(cmake/Hardening.cmake)
+    setup_hardening()
+endif()
+
+################################################################################
+# Interprocedural Optimization (LTO)
+################################################################################
+
+if(ENABLE_IPO)
+    include(cmake/IPO.cmake)
+    setup_ipo()
+endif()
+
+################################################################################
 # Documentation
 ################################################################################
 
@@ -260,5 +286,15 @@ message(STATUS "  Thread:             ${ENABLE_SANITIZER_THREAD}")
 message(STATUS "  Undefined:          ${ENABLE_SANITIZER_UNDEFINED}")
 message(STATUS "  Memory:             ${ENABLE_SANITIZER_MEMORY}")
 message(STATUS "  Leak:               ${ENABLE_SANITIZER_LEAK}")
+message(STATUS "")
+message(STATUS "Security & Optimization:")
+message(STATUS "  Hardening:          ${ENABLE_HARDENING}")
+if(ENABLE_HARDENING)
+message(STATUS "  Hardening Full:     ${ENABLE_HARDENING_FULL}")
+endif()
+message(STATUS "  IPO/LTO:            ${ENABLE_IPO}")
+if(ENABLE_IPO)
+message(STATUS "  ThinLTO:            ${ENABLE_IPO_THIN}")
+endif()
 message(STATUS "========================================")
 message(STATUS "")

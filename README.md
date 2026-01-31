@@ -160,6 +160,15 @@ ctest --test-dir build --output-on-failure
 | `linux-clang-ubsan` | UndefinedBehaviorSanitizer |
 | `linux-clang-msan` | MemorySanitizer (uninitialized reads) |
 
+### Hardened Release Presets
+
+| Preset | Description |
+|--------|-------------|
+| `linux-gcc-release-hardened` | GCC Release with hardening + LTO |
+| `linux-clang-release-hardened` | Clang Release with hardening + ThinLTO |
+| `macos-clang-release-hardened` | macOS Release with hardening + ThinLTO |
+| `windows-msvc-release-hardened` | MSVC Release with hardening + LTO |
+
 ### Utility Presets
 
 | Preset | Description |
@@ -181,6 +190,8 @@ PROJECT_NAME/
 ├── cmake/                   # CMake helper modules
 │   ├── Coverage.cmake       # Coverage configuration
 │   ├── Sanitizers.cmake     # Sanitizer setup
+│   ├── Hardening.cmake      # Security hardening flags
+│   ├── IPO.cmake            # Link-Time Optimization
 │   ├── ClangTidy.cmake      # clang-tidy setup
 │   ├── Cppcheck.cmake       # cppcheck setup
 │   ├── ClangFormat.cmake    # clang-format targets
@@ -229,6 +240,10 @@ Set via `-D` flag or in `cmake.options`:
 | `ENABLE_SANITIZER_THREAD` | OFF | Enable ThreadSanitizer |
 | `ENABLE_SANITIZER_UNDEFINED` | OFF | Enable UBSan |
 | `ENABLE_SANITIZER_MEMORY` | OFF | Enable MemorySanitizer |
+| `ENABLE_HARDENING` | OFF | Enable security hardening flags |
+| `ENABLE_HARDENING_FULL` | OFF | Enable full hardening (includes spectre mitigations) |
+| `ENABLE_IPO` | OFF | Enable Link-Time Optimization |
+| `ENABLE_IPO_THIN` | OFF | Use ThinLTO (faster linking) |
 
 ### Package Manager Configuration
 
@@ -442,6 +457,102 @@ ctest --preset linux-clang-ubsan
 ```
 
 **Note:** Address and Thread sanitizers cannot be used together.
+
+## Security Hardening
+
+Security hardening applies compiler and linker flags to protect against common exploitation techniques. Best used for production/release builds.
+
+### Standard Hardening
+
+```bash
+cmake -B build -DCMAKE_BUILD_TYPE=Release -DENABLE_HARDENING=ON
+cmake --build build
+```
+
+**Protections included:**
+- **Stack Protection**: `-fstack-protector-strong`, `-fstack-clash-protection`
+- **Position Independent Code**: PIE for executables, PIC for libraries
+- **Format String Protection**: `-Wformat-security`, `-Werror=format-security`
+- **FORTIFY_SOURCE**: Runtime buffer overflow detection
+- **RELRO**: Full relocation read-only (`-Wl,-z,relro,-z,now`)
+- **Control Flow Integrity**: `-fcf-protection=full` (x86), `-mbranch-protection` (ARM)
+- **Non-executable Stack**: `-Wl,-z,noexecstack`
+
+### Full Hardening (Maximum Security)
+
+Includes additional speculative execution mitigations. **May impact performance.**
+
+```bash
+cmake -B build -DCMAKE_BUILD_TYPE=Release -DENABLE_HARDENING=ON -DENABLE_HARDENING_FULL=ON
+cmake --build build
+```
+
+**Additional protections:**
+- **Spectre Mitigations**: `-mretpoline`, `-mspeculative-load-hardening`
+- **Register Clearing**: `-fzero-call-used-regs`
+- **SLS Hardening**: `-mharden-sls=all`
+- **Intel CET**: `-Wl,-z,ibt`, `-Wl,-z,shstk` (Linux)
+
+### Hardened Release Presets
+
+```bash
+# Linux GCC with hardening + LTO
+cmake --preset linux-gcc-release-hardened
+cmake --build --preset linux-gcc-release-hardened
+
+# Linux Clang with hardening + ThinLTO
+cmake --preset linux-clang-release-hardened
+cmake --build --preset linux-clang-release-hardened
+
+# macOS with hardening + ThinLTO
+cmake --preset macos-clang-release-hardened
+cmake --build --preset macos-clang-release-hardened
+
+# Windows MSVC with hardening + LTO
+cmake --preset windows-msvc-release-hardened
+cmake --build --preset windows-msvc-release-hardened
+```
+
+## Link-Time Optimization (LTO)
+
+LTO enables whole-program optimization by deferring optimization decisions to link time, typically providing 5-20% performance improvement.
+
+### When to Use LTO
+
+| Build Type | Recommended | Notes |
+|------------|-------------|-------|
+| Debug | No | Increases link time, breaks debugging |
+| Release | Yes | Best performance for production |
+| CI/Testing | ThinLTO | Faster than full LTO |
+
+### Standard LTO
+
+Maximum optimization, but slower linking:
+
+```bash
+cmake -B build -DCMAKE_BUILD_TYPE=Release -DENABLE_IPO=ON
+cmake --build build
+```
+
+### ThinLTO (Recommended for Development)
+
+Faster linking with most of the optimization benefits:
+
+```bash
+cmake -B build -DCMAKE_BUILD_TYPE=Release -DENABLE_IPO=ON -DENABLE_IPO_THIN=ON
+cmake --build build
+```
+
+**Comparison:**
+
+| Feature | Full LTO | ThinLTO |
+|---------|----------|---------|
+| Optimization | Maximum | ~95% of full |
+| Link Time | Slow (2-10x) | Moderate (1.5-3x) |
+| Memory Usage | High | Lower |
+| Incremental Builds | Poor | Better |
+| Clang Support | Yes | Yes (preferred) |
+| GCC Support | Yes | No (uses parallel LTO) |
 
 ## Documentation
 

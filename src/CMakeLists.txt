@@ -22,6 +22,11 @@ target_compile_features(${PROJECT_NAME}_lib
 # Apply strict warnings to this target only
 set_project_warnings(${PROJECT_NAME}_lib)
 
+# Apply security hardening if enabled
+if(ENABLE_HARDENING)
+    harden(${PROJECT_NAME}_lib)
+endif()
+
 # Optional: Add other libs you want warnings for here
 
 # Optional: Create an executable

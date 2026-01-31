@@ -28,6 +28,11 @@ target_compile_definitions(${PROJECT_NAME}_tests PRIVATE CATCH2_VERSION=${CATCH2
 # Apply strict warnings to this target only
 set_project_warnings(${PROJECT_NAME}_tests)
 
+# Apply security hardening if enabled
+if(ENABLE_HARDENING)
+    harden(${PROJECT_NAME}_tests)
+endif()
+
 # Enable CTest support
 include(CTest)
 enable_testing()
