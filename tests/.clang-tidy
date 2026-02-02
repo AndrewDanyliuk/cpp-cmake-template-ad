@@ -19,7 +19,8 @@ Checks: >
   -bugprone-chained-comparison,
   -cppcoreguidelines-owning-memory,
   -cppcoreguidelines-special-member-functions,
-  -cppcoreguidelines-avoid-non-const-global-variables
+  -cppcoreguidelines-avoid-non-const-global-variables,
+  -bugprone-easily-swappable-parameters
 
 # Fewer warnings treated as errors in test code
 WarningsAsErrors: 'modernize-use-nullptr,bugprone-assignment-in-if-condition,bugprone-empty-catch,bugprone-narrowing-conversions,bugprone-too-small-loop-variable,portability-avoid-pragma-once'
@@ -41,6 +42,8 @@ CheckOptions:
     value: '_'
   - key: readability-identifier-naming.ConstantCase
     value: UPPER_CASE
+  - key: readability-identifier-naming.ConstantParameterCase
+    value: lower_case
   - key: readability-identifier-naming.EnumConstantCase
     value: UPPER_CASE
   - key: readability-identifier-naming.MacroDefinitionCase

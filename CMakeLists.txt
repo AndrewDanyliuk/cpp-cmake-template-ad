@@ -57,6 +57,15 @@ project(PROJECT_NAME_CAMEL
 # Export compile commands for clang-tidy and other tools
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+# Create symlink for compile_commands.json so pre-commit hooks can find it
+# This updates automatically when switching presets
+file(RELATIVE_PATH BUILD_DIR_NAME ${CMAKE_SOURCE_DIR}/build ${CMAKE_BINARY_DIR})
+file(CREATE_LINK
+    ${BUILD_DIR_NAME}/compile_commands.json
+    ${CMAKE_SOURCE_DIR}/build/compile_commands.json
+    SYMBOLIC
+)
+
 ################################################################################
 # CMake Options (can be overridden by presets or command line)
 ################################################################################
