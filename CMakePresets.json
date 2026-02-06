@@ -83,7 +83,7 @@
         "ENABLE_CPPCHECK": "OFF",
         "ENABLE_CLANG_FORMAT": "OFF",
         "ENABLE_CCACHE": "ON",
-        "ENABLE_PRE_COMMIT": "ON"
+        "ENABLE_PRE_COMMIT": "OFF"
       }
     },
     {

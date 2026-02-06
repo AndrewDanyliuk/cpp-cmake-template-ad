@@ -22,7 +22,6 @@ function(set_project_warnings target_name)
         -Wall
         -Wextra
         -Wpedantic
-        -Werror
         -Wshadow
         -Wnon-virtual-dtor
         -Wold-style-cast

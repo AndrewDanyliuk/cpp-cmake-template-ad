@@ -45,4 +45,6 @@ elseif(EXISTS "${Catch2_SOURCE_DIR}/contrib")
 endif()
 
 include(Catch)
-catch_discover_tests(${PROJECT_NAME}_tests)
+catch_discover_tests(${PROJECT_NAME}_tests
+    EXTRA_ARGS -s
+)

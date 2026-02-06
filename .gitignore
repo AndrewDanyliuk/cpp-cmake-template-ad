@@ -21,6 +21,7 @@ out/coverage/*
 *.swp
 *.swo
 *~
+.todo
 
 # Compiled files
 *.o

@@ -32,6 +32,7 @@ repos:
         entry: cppcheck
         language: system
         types_or: [c, c++]
+        pass_filenames: false
         args:
           - --project=build/compile_commands.json
           - --error-exitcode=1
@@ -39,3 +40,6 @@ repos:
           - --suppress=missingIncludeSystem
           - --suppress=unmatchedSuppression
           - --inline-suppr
+          - --file-filter=./src/*
+          - --file-filter=./include/*
+          - --file-filter=./tests/*

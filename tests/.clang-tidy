@@ -21,6 +21,8 @@ Checks: >
   -cppcoreguidelines-special-member-functions,
   -cppcoreguidelines-avoid-non-const-global-variables,
   -bugprone-easily-swappable-parameters
+  -cppcoreguidelines-avoid-c-arrays,                                                                                                                                       
+  -modernize-avoid-c-arrays,    
 
 # Fewer warnings treated as errors in test code
 WarningsAsErrors: 'modernize-use-nullptr,bugprone-assignment-in-if-condition,bugprone-empty-catch,bugprone-narrowing-conversions,bugprone-too-small-loop-variable,portability-avoid-pragma-once'

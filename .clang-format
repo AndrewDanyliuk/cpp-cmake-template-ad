@@ -7,9 +7,9 @@ UseTab: Never
 
 # Alignment
 AlignAfterOpenBracket: Align
-AlignConsecutiveAssignments: false
-AlignConsecutiveDeclarations: false
-AlignOperands: true
+AlignConsecutiveAssignments: None
+AlignConsecutiveDeclarations: None
+AlignOperands: AlignAfterOperator
 AlignTrailingComments: true
 
 # Breaks
@@ -43,7 +43,7 @@ SpaceBeforeParens: ControlStatements
 SpaceBeforeRangeBasedForLoopColon: true
 SpaceInEmptyParentheses: false
 SpacesBeforeTrailingComments: 2
-SpacesInAngles: false
+SpacesInAngles: Leave
 SpacesInCStyleCastParentheses: false
 SpacesInContainerLiterals: false
 SpacesInParentheses: false
@@ -54,8 +54,8 @@ PointerAlignment: Left
 
 # Includes
 IncludeBlocks: Regroup
-SortIncludes: true
-SortUsingDeclarations: true
+SortIncludes: CaseSensitive
+SortUsingDeclarations: LexicographicNumeric
 
 # Comments
-ReflowComments: true
+ReflowComments: IndentOnly
