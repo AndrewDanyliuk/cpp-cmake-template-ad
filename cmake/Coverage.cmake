@@ -83,9 +83,7 @@ function(setup_llvm_coverage)
 
     # Add coverage-report target for llvm-cov
     add_custom_target(coverage-report
-        COMMAND ${LLVM_PROFDATA_EXECUTABLE} merge -sparse
-            ${CMAKE_BINARY_DIR}/default.profraw
-            -o ${CMAKE_BINARY_DIR}/default.profdata
+        COMMAND sh -c "${LLVM_PROFDATA_EXECUTABLE} merge -sparse '${CMAKE_BINARY_DIR}'/default-*.profraw -o '${CMAKE_BINARY_DIR}/default.profdata'"
         COMMAND ${LLVM_COV_EXECUTABLE} show ${TEST_EXECUTABLE}
             -instr-profile=${CMAKE_BINARY_DIR}/default.profdata
             -format=html

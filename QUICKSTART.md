@@ -33,166 +33,245 @@ brew install cmake ninja llvm
 choco install cmake ninja llvm visualstudio2022buildtools
 ```
 
-## 3. Build and Test
+## 1. Configure and Build
+
+Every build starts with choosing a **preset**. Presets define the compiler, build type, and platform.
 
 ```bash
-# Configure with preset
-cmake --preset linux-gcc-debug
+# List available presets for your platform
+cmake --list-presets
+
+# Configure (pick one for your OS)
+cmake --preset macos-clang-debug     # macOS
+cmake --preset linux-gcc-debug       # Linux (GCC)
+cmake --preset linux-clang-debug     # Linux (Clang)
+cmake --preset windows-msvc-debug    # Windows
 
 # Build
-cmake --build --preset linux-gcc-debug
-
-# Run tests
-ctest --preset linux-gcc-debug
+cmake --build build/<preset-name>
 ```
 
-## 4. Start Coding!
+### Which preset should I use?
 
-### Add a new class:
+| Goal | Preset |
+|---|---|
+| Day-to-day development (macOS) | `macos-clang-debug` |
+| Day-to-day development (Linux, GCC) | `linux-gcc-debug` |
+| Day-to-day development (Linux, Clang) | `linux-clang-debug` |
+| Day-to-day development (Windows) | `windows-msvc-debug` |
+| Code coverage (macOS/Linux Clang) | `macos-clang-coverage` / `linux-clang-coverage` |
+| Code coverage (Linux GCC) | `linux-gcc-coverage` |
+| AddressSanitizer (Linux) | `linux-clang-asan` |
+| ThreadSanitizer (Linux) | `linux-clang-tsan` |
+| UBSanitizer (Linux) | `linux-clang-ubsan` |
+| MemorySanitizer (Linux) | `linux-clang-msan` |
+| Release build | `<os>-<compiler>-release` |
+| Hardened release + LTO | `<os>-<compiler>-release-hardened` |
 
-**include/myproject/calculator.h:**
-```cpp
-#ifndef MYPROJECT_CALCULATOR_H
-#define MYPROJECT_CALCULATOR_H
+**Debug presets** include `dev-mode` which enables: testing, ccache, and disables static analysis by default.
+**Release presets** enable testing but omit dev tooling.
 
-namespace myproject {
+## 2. Configuration Precedence
 
-class Calculator
-{
-public:
-    int add(int a, int b);
-};
+Settings can be changed in multiple places. Higher precedence wins:
 
-}  // namespace myproject
+1. **Command line** (highest): `cmake -B build -DENABLE_TESTING=ON`
+2. **CMakePresets.json**: `cacheVariables` in the selected preset
+3. **cmake.options**: quick-toggle defaults file (edit this for local tweaks)
+4. **CMakeLists.txt**: hardcoded fallback defaults (lowest)
 
-#endif
+For quick experimentation, edit `cmake.options`. For reproducible/CI builds, use presets.
+
+## 3. Project Structure
+
+```
+src/
+    CMakeLists.txt          # Library and executable targets
+    questions1.cpp          # Source files
+    ...
+include/
+    <project_name>/
+        assign4.h           # Public headers
+tests/
+    CMakeLists.txt          # Test target
+    test_example.cpp        # Test files (Catch2)
+cmake.options               # Quick config toggles
+CMakePresets.json            # Preset definitions
 ```
 
-**src/calculator.cpp:**
-```cpp
-#include "myproject/calculator.h"
+## 4. Adding Source Files
 
-namespace myproject {
+### Adding to the library
 
-int Calculator::add(int a, int b)
-{
-    return a + b;
-}
+1. Create your `.cpp` file in `src/`
+2. Add it to the `add_library()` call in `src/CMakeLists.txt`:
 
-}  // namespace myproject
-```
-
-**Update src/CMakeLists.txt:**
 ```cmake
 add_library(${PROJECT_NAME}_lib
-    example.cpp
-    calculator.cpp  # Add this line
+    questions1.cpp
+    my_new_file.cpp          # <-- add here
 )
 ```
 
-### Add a test:
+3. Declare functions/classes in a header under `include/<project_name>/`
 
-**tests/test_calculator.cpp:**
+**If you forget to add a `.cpp` file here, you'll get a linker error** ("undefined symbol") even though the code compiles fine.
+
+### Creating an executable
+
+Uncomment the block at the bottom of `src/CMakeLists.txt`:
+
+```cmake
+add_executable(${PROJECT_NAME}
+    main.cpp
+)
+
+target_link_libraries(${PROJECT_NAME}
+    PRIVATE
+        ${PROJECT_NAME}::lib
+)
+```
+
+Then create `src/main.cpp` with a `main()` function.
+
+### Adding tests
+
+1. Write your test file in `tests/` using Catch2:
+
 ```cpp
-#include <catch2/catch_test_macros.hpp>
-#include "myproject/calculator.h"
+// Catch2 v2 (C++11) -- this project uses v2
+#define CATCH_CONFIG_MAIN
+#include <catch2/catch.hpp>
+#include "<project_name>/your_header.h"
 
-TEST_CASE("Calculator adds numbers", "[calc]")
-{
-    myproject::Calculator calc;
-    REQUIRE(calc.add(2, 3) == 5);
+TEST_CASE("My test", "[tag]") {
+    REQUIRE(1 + 1 == 2);
 }
 ```
 
-**Update tests/CMakeLists.txt:**
+2. Add the file to `tests/CMakeLists.txt`:
+
 ```cmake
 add_executable(${PROJECT_NAME}_tests
     test_example.cpp
-    test_calculator.cpp  # Add this line
+    test_my_new_file.cpp     # <-- add here
 )
 ```
 
-### Rebuild and test:
+Note: This project uses **Catch2 v2** (for C++11 compatibility). If `CXX_STANDARD` is set to 14 or higher, Catch2 v3 is used automatically.
+
+## 5. Running Tests
 
 ```bash
-cmake --build --preset linux-gcc-debug
-ctest --preset linux-gcc-debug
+# Run all tests
+ctest --test-dir build/<preset-name>
+
+# Run with output on failure
+ctest --test-dir build/<preset-name> --output-on-failure
+
+# Run a specific test by name
+ctest --test-dir build/<preset-name> -R "test name pattern"
 ```
 
-## 5. Common Tasks
+## 6. Code Coverage
 
-### Change C++ standard to C++20:
+Coverage requires `ENABLE_COVERAGE=ON` (set in `cmake.options` or use a coverage preset).
 
-**Edit cmake.options:**
+```bash
+# Option A: Use a coverage preset
+cmake --preset macos-clang-coverage
+cmake --build build/macos-clang-coverage
+
+# Option B: Use cmake.options (already ON by default in this project)
+# Just build with your normal debug preset
+
+# Step 1: Run tests (generates .profraw)
+ctest --test-dir build/<preset-name>
+
+# Step 2: Generate HTML report
+cmake --build build/<preset-name> --target coverage-report
+
+# Step 3: View
+open out/coverage/index.html
+```
+
+The coverage report is written to `out/coverage/`.
+
+## 7. Sanitizers
+
+Sanitizers detect runtime bugs. Enable them in `cmake.options`:
+
 ```ini
-CXX_STANDARD=20
+ENABLE_SANITIZER_ADDRESS=ON      # buffer overflows, use-after-free, double-free
+ENABLE_SANITIZER_THREAD=ON       # data races (conflicts with address)
+ENABLE_SANITIZER_UNDEFINED=ON    # undefined behavior
+ENABLE_SANITIZER_MEMORY=ON       # uninitialized reads (Clang-only, Linux-only)
+ENABLE_SANITIZER_LEAK=ON         # memory leaks (Linux-only)
 ```
 
-**Or use preset:**
-```bash
-cmake --preset cpp20-linux-clang
-```
-
-### Enable code coverage:
-
-```bash
-cmake --preset linux-clang-coverage
-cmake --build --preset linux-clang-coverage
-ctest --preset linux-clang-coverage
-
-# Generate report
-llvm-profdata merge -sparse default.profraw -o default.profdata
-llvm-cov show ./build/linux-clang-coverage/tests/*_tests \
-  -instr-profile=default.profdata \
-  -format=html \
-  -output-dir=coverage
-
-open coverage/index.html
-```
-
-### Format code:
+Or use a sanitizer preset (Linux):
 
 ```bash
-cmake -B build -DENABLE_CLANG_FORMAT=ON
-cmake --build build --target format
+cmake --preset linux-clang-asan    # AddressSanitizer
+cmake --preset linux-clang-tsan    # ThreadSanitizer
+cmake --preset linux-clang-ubsan   # UndefinedBehaviorSanitizer
+cmake --preset linux-clang-msan    # MemorySanitizer
 ```
 
-### Run static analysis:
+Sanitizers produce output **only when they detect a problem**. No output = no bugs found.
+
+**Important constraints:**
+- Address and Thread sanitizers cannot be used together
+- Leak sanitizer does not work on macOS (use `check-leaks` target instead)
+- Memory sanitizer is Linux + Clang only
+
+### Memory Leak Detection on macOS
+
+This project includes a `check-leaks` CMake target that uses macOS's native `leaks` tool. It is **incompatible with AddressSanitizer** -- you must disable ASan first:
+
+```ini
+# In cmake.options, set:
+ENABLE_SANITIZER_ADDRESS=OFF
+```
+
+Then reconfigure, rebuild, and run:
 
 ```bash
-cmake --preset linux-clang-debug  # Includes clang-tidy
-cmake --build --preset linux-clang-debug
+cmake --preset macos-clang-debug
+cmake --build build/macos-clang-debug
+cmake --build build/macos-clang-debug --target check-leaks
 ```
 
-## 6. Available Presets
+## 8. cmake.options Reference
 
-List all presets:
-```bash
-cmake --list-presets
-```
+| Option | Default | Description |
+|---|---|---|
+| `CXX_STANDARD` | `11` | C++ standard (11, 14, 17, 20, 23) |
+| `BUILD_TYPE` | `Debug` | Build type (Debug, Release, RelWithDebInfo, MinSizeRel) |
+| `PACKAGE_MANAGER` | `CPM` | Dependency manager (CPM, VCPKG, NONE) |
+| `ENABLE_TESTING` | `ON` | Build and run Catch2 tests |
+| `ENABLE_COVERAGE` | `ON` | Instrument for code coverage |
+| `COVERAGE_TOOL` | `llvm-cov` | Coverage backend (llvm-cov or gcov) |
+| `ENABLE_CCACHE` | `ON` | Use ccache for faster rebuilds |
+| `ENABLE_CPPCHECK` | `OFF` | Static analysis with cppcheck |
+| `ENABLE_CLANG_TIDY` | `OFF` | Static analysis with clang-tidy |
+| `ENABLE_CLANG_FORMAT` | `OFF` | Code formatting targets |
+| `ENABLE_DOXYGEN` | `OFF` | Generate documentation |
+| `ENABLE_SANITIZER_ADDRESS` | `OFF` | AddressSanitizer |
+| `ENABLE_SANITIZER_THREAD` | `OFF` | ThreadSanitizer |
+| `ENABLE_SANITIZER_UNDEFINED` | `OFF` | UBSan |
+| `ENABLE_SANITIZER_MEMORY` | `OFF` | MemorySanitizer |
+| `ENABLE_SANITIZER_LEAK` | `OFF` | LeakSanitizer |
+| `ENABLE_HARDENING` | `OFF` | Security hardening flags |
+| `ENABLE_HARDENING_FULL` | `OFF` | + speculative execution mitigations |
+| `ENABLE_IPO` | `OFF` | Link-Time Optimization |
+| `ENABLE_IPO_THIN` | `OFF` | ThinLTO (faster than full LTO) |
 
-Common presets:
-- `linux-gcc-debug` - Development with GCC
-- `linux-clang-debug` - Development with Clang
-- `linux-clang-coverage` - Code coverage with llvm-cov
-- `linux-clang-asan` - AddressSanitizer (memory errors)
-- `linux-clang-tsan` - ThreadSanitizer (data races)
-- `macos-clang-debug` - macOS development
-- `windows-msvc-debug` - Windows MSVC
+## 9. Custom CMake Targets
 
-## Need Help?
-
-- See [README.md](README.md) for comprehensive documentation
-- Check the `cmake/` directory for configuration modules
-- Edit `cmake.options` for quick configuration changes
-- Use presets for reproducible builds
-
-## Next Steps
-
-1. Update [README.md](README.md) with your project description
-2. Choose a license in [LICENSE](LICENSE)
-3. Add dependencies to `CMakeLists.txt` or `vcpkg.json`
-4. Write tests as you add features
-5. Enable CI/CD (see README for GitHub Actions example)
-
-Happy coding! 🚀
+| Target | Description |
+|---|---|
+| `coverage-report` | Generate HTML coverage report to `out/coverage/` |
+| `coverage-clean` | Delete all coverage data |
+| `check-leaks` | Run macOS `leaks` tool (requires ASan OFF) |
+| `format` | Format code with clang-format (requires `ENABLE_CLANG_FORMAT=ON`) |

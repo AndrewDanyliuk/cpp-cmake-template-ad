@@ -264,6 +264,30 @@ if(ENABLE_TESTING)
 endif()
 
 ################################################################################
+# macOS Leak Checking (leaks --atExit)
+################################################################################
+
+if(APPLE AND ENABLE_TESTING)
+    find_program(LEAKS_EXECUTABLE NAMES leaks)
+    if(LEAKS_EXECUTABLE)
+        set(TEST_EXECUTABLE "${CMAKE_BINARY_DIR}/tests/${PROJECT_NAME}_tests")
+        if(ENABLE_SANITIZER_ADDRESS)
+            add_custom_target(check-leaks
+                COMMAND ${CMAKE_COMMAND} -E echo "ERROR: check-leaks cannot run with AddressSanitizer enabled."
+                COMMAND ${CMAKE_COMMAND} -E echo "Rebuild with ENABLE_SANITIZER_ADDRESS=OFF and try again."
+                COMMAND ${CMAKE_COMMAND} -E false
+                COMMENT "check-leaks: incompatible with ASan"
+            )
+        else()
+            add_custom_target(check-leaks
+                COMMAND ${LEAKS_EXECUTABLE} --atExit -- ${TEST_EXECUTABLE}
+                COMMENT "Running macOS leaks tool on test binary"
+            )
+        endif()
+    endif()
+endif()
+
+################################################################################
 # Summary
 ################################################################################
 

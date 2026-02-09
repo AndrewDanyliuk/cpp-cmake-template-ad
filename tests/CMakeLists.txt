@@ -19,8 +19,7 @@ target_link_libraries(${PROJECT_NAME}_tests
     PRIVATE
         ${PROJECT_NAME}::lib
         ${CATCH2_TARGET}
-        gmock
-)
+        gmock)
 
 # Pass Catch2 version to source code for conditional includes
 target_compile_definitions(${PROJECT_NAME}_tests PRIVATE CATCH2_VERSION=${CATCH2_VERSION})
@@ -33,9 +32,7 @@ if(ENABLE_HARDENING)
     harden(${PROJECT_NAME}_tests)
 endif()
 
-# Enable CTest support
-include(CTest)
-enable_testing()
+
 
 # Add Catch2 module path (v2 uses contrib/, v3 uses extras/)
 if(EXISTS "${Catch2_SOURCE_DIR}/extras")
@@ -47,4 +44,5 @@ endif()
 include(Catch)
 catch_discover_tests(${PROJECT_NAME}_tests
     EXTRA_ARGS -s
+    PROPERTIES ENVIRONMENT "LLVM_PROFILE_FILE=${CMAKE_BINARY_DIR}/default-%m.profraw"
 )
